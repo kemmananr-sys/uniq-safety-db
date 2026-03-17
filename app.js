@@ -1,3 +1,18 @@
+// 🚩 ระบบล็อกรหัสผ่านหน้าเว็บ
+const SECRET_PASSCODE = "303173"; // ลูกพี่เปลี่ยนรหัสตรงนี้ตามใจชอบครับ
+let isAuthorized = sessionStorage.getItem("isAuthorized");
+
+if (!isAuthorized) {
+    let input = prompt("กรุณาใส่รหัสผ่านเพื่อเข้าใช้งานระบบ SAFETY UNIQ:");
+    if (input === SECRET_PASSCODE) {
+        sessionStorage.setItem("isAuthorized", "true");
+        alert("รหัสถูกต้อง ยินดีต้อนรับครับ");
+    } else {
+        alert("รหัสผ่านไม่ถูกต้อง! ระบบจะปิดตัวลง");
+        window.location.href = "https://google.com"; // ถ้าใส่ผิดให้เด้งไป Google แทน
+    }
+}
+
 const API_URL = "https://script.google.com/macros/s/AKfycbyD6RlvRATllKL3MIuw-iQQi4Ye-WaHjH4bESJfjGH82JEmAa6yTVj9293XR3RDUu0IKQ/exec"; // อย่าลืมเช็คลิงก์ Google Script นะครับ
 
 let workerData = [];
