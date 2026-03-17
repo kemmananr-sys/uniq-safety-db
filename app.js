@@ -1,30 +1,42 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbyD6RlvRATllKL3MIuw-iQQi4Ye-WaHjH4bESJfjGH82JEmAa6yTVj9293XR3RDUu0IKQ/exec"; // 🚩 เปลี่ยนเป็นลิงก์ของลูกพี่
 const MY_PASSCODE = "303173"; // 🚩 รหัสผ่านเข้าเว็บ
 
-let workerData = [];
-
-// --- 1. ระบบล็อกหน้าจอ ---
+// 1. 🚩 ระบบเช็คการเข้าถึง (ใช้ sessionStorage แทน prompt)
+// ถ้าเคยใส่รหัสผ่านแล้วใน Session นี้ ให้ปิดหน้าจอ Lock Screen ทันที
 if (sessionStorage.getItem("accessGranted") === "true") {
-    document.getElementById("lock-screen").style.display = "none";
+    const lock = document.getElementById("lock-screen");
+    if (lock) lock.style.display = "none";
 }
 
+// 2. 🚩 ฟังก์ชันเช็ครหัสผ่านจากหน้าจอ UNLOCK (ไม่ใช่ prompt)
 function checkPasscode() {
-    const val = document.getElementById("passcodeInput").value;
+    const passcodeField = document.getElementById("passcodeInput");
+    const val = passcodeField.value;
+
     if (val === MY_PASSCODE) {
         sessionStorage.setItem("accessGranted", "true");
-        document.getElementById("lock-screen").style.opacity = "0";
-        setTimeout(() => document.getElementById("lock-screen").style.display = "none", 500);
+        // อนิเมชั่นจางหายไปแบบนุ่มนวล
+        const lock = document.getElementById("lock-screen");
+        lock.style.opacity = "0";
+        setTimeout(() => {
+            lock.style.display = "none";
+        }, 500);
     } else {
-        alert("รหัสไม่ถูกต้อง!");
-        document.getElementById("passcodeInput").value = "";
+        alert("รหัสไม่ถูกต้อง! กรุณาลองใหม่");
+        passcodeField.value = ""; // ล้างรหัสที่พิมพ์ผิด
+        passcodeField.focus();    // ให้พิมพ์ต่อได้เลย
     }
 }
 
-// --- 2. ระบบค้นหาและ Enter ---
-document.addEventListener('keypress', (e) => {
+// 3. 🚩 ระบบกด Enter ในหน้าล็อกและหน้าหลัก
+document.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
-        if (document.activeElement.id === 'passcodeInput') checkPasscode();
-        if (document.activeElement.id === 'searchInput') searchWorker();
+        const activeID = document.activeElement.id;
+        if (activeID === 'passcodeInput') {
+            checkPasscode(); // ถ้าพิมพ์รหัสอยู่ กด Enter ให้ปลดล็อก
+        } else if (activeID === 'searchInput') {
+            searchWorker(); // ถ้าพิมพ์ชื่อพนักงานอยู่ กด Enter ให้ค้นหา
+        }
     }
 });
 
