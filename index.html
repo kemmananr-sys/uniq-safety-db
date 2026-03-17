@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UNIQ RED LINE | SAFETY DATABASE</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <img src="Logo.png" alt="UNIQ Logo" class="nav-logo">
+            <div class="nav-menu">
+                <a href="download.html">DOWNLOADS</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <img src="rodfai.jpg" class="hero-bg" alt="Red Line Project">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h2 class="sub-title">UNIQUE ENGINEERING</h2>
+            <h1 class="main-title">RED LINE PROJECT</h1>
+            <div class="search-box-wrapper">
+                <input type="text" id="searchInput" placeholder="NAME / ID" class="spacex-input">
+                <button onclick="searchWorker()" class="spacex-btn">SEARCH</button>
+            </div>
+        </div>
+    </header>
+
+    <main id="team-area" class="main-area">
+        <div class="container">
+            <div class="team-filter">
+                <button class="filter-btn" onclick="filterTeam('Safety')">SAFETY</button>
+                <button class="filter-btn" onclick="filterTeam('Station B')">STATION B</button>
+            </div>
+            <div id="workerList" class="dashboard-display"></div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNIQ SAFETY | DOWNLOADS</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* สไตล์เฉพาะหน้าดาวน์โหลดเพื่อให้ดูพรีเมียมขึ้น */
+        .download-page {
+            padding-top: 120px;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('rodfai.jpg') no-repeat center center/cover;
+            background-attachment: fixed;
+        }
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        .doc-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        .doc-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--uniq-red);
+            transform: translateY(-5px);
+        }
+        .doc-category {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--uniq-red);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .doc-title {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+        .download-btn {
+            display: inline-block;
+            border: 1px solid white;
+            color: white;
+            padding: 10px 25px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+        .download-btn:hover {
+            background: white;
+            color: black;
+        }
+        .back-nav {
+            margin-bottom: 30px;
+        }
+        .back-nav a {
+            color: #888;
+            text-decoration: none;
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+        .back-nav a:hover { color: white; }
+    </style>
+</head>
+<body class="download-page">
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <img src="Logo.png" alt="UNIQ Logo" class="nav-logo">
+            <div class="nav-menu">
+                <a href="index.html">HOME</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="back-nav">
+            <a href="index.html">← BACK TO DATABASE</a>
+        </div>
+
+        <h2 class="sub-title" style="text-align: left;">UNIQ RESOURCES</h2>
+        <h1 class="main-title" style="text-align: left; font-size: 45px;">SAFETY DOCUMENTS</h1>
+        <p class="project-desc" style="text-align: left;">TECHNICAL SIGNS AND MISSION PROTOCOLS</p>
+
+        <div class="download-grid">
+            <div class="doc-card">
+                <div class="doc-category">Safety Sign</div>
+                <div class="doc-title">วัสดุรอการขนย้าย (Warning)</div>
+                <p style="font-size: 12px; color: #666; margin-bottom: 20px;">FILE TYPE: PDF (A4 SIZE)</p>
+                <a href="docs/warning_moving.pdf" download class="download-btn">DOWNLOAD</a>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-category">Instruction</div>
+                <div class="doc-title">วัสดุรอการใช้งาน (Stationary)</div>
+                <p style="font-size: 12px; color: #666; margin-bottom: 20px;">FILE TYPE: PNG (HIGH RES)</p>
+                <a href="docs/stationary_sign.png" download class="download-btn">DOWNLOAD</a>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-category">Protocol</div>
+                <div class="doc-title">ขั้นตอนการปฏิบัติงานพื้นฐาน</div>
+                <p style="font-size: 12px; color: #666; margin-bottom: 20px;">FILE TYPE: PDF</p>
+                <a href="#" class="download-btn">COMING SOON</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer" style="margin-top: 100px; text-align: center; color: #444; font-size: 10px; letter-spacing: 2px; padding-bottom: 40px;">
+        UNIQUE ENGINEERING AND CONSTRUCTION PCL. ALL RIGHTS RESERVED.
+    </div>
+
+</body>
+</html>
