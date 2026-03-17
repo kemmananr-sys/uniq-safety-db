@@ -1,74 +1,60 @@
-// 🚩 ระบบล็อกรหัสผ่านหน้าเว็บ
-const SECRET_PASSCODE = "303173"; // ลูกพี่เปลี่ยนรหัสตรงนี้ตามใจชอบครับ
-let isAuthorized = sessionStorage.getItem("isAuthorized");
-
-if (!isAuthorized) {
-    let input = prompt("กรุณาใส่รหัสผ่านเพื่อเข้าใช้งานระบบ SAFETY UNIQ:");
-    if (input === SECRET_PASSCODE) {
-        sessionStorage.setItem("isAuthorized", "true");
-        alert("รหัสถูกต้อง ยินดีต้อนรับครับ");
-    } else {
-        alert("รหัสผ่านไม่ถูกต้อง! ระบบจะปิดตัวลง");
-        window.location.href = "https://google.com"; // ถ้าใส่ผิดให้เด้งไป Google แทน
-    }
-}
-
-const API_URL = "https://script.google.com/macros/s/AKfycbyD6RlvRATllKL3MIuw-iQQi4Ye-WaHjH4bESJfjGH82JEmAa6yTVj9293XR3RDUu0IKQ/exec"; // อย่าลืมเช็คลิงก์ Google Script นะครับ
+const API_URL = "https://script.google.com/macros/s/AKfycbyD6RlvRATllKL3MIuw-iQQi4Ye-WaHjH4bESJfjGH82JEmAa6yTVj9293XR3RDUu0IKQ/exec"; // 🚩 เปลี่ยนเป็นลิงก์ของลูกพี่
+const MY_PASSCODE = "303173"; // 🚩 รหัสผ่านเข้าเว็บ
 
 let workerData = [];
 
-// 1. ดึงข้อมูลจากฐานข้อมูล
+// --- 1. ระบบล็อกหน้าจอ ---
+if (sessionStorage.getItem("accessGranted") === "true") {
+    document.getElementById("lock-screen").style.display = "none";
+}
+
+function checkPasscode() {
+    const val = document.getElementById("passcodeInput").value;
+    if (val === MY_PASSCODE) {
+        sessionStorage.setItem("accessGranted", "true");
+        document.getElementById("lock-screen").style.opacity = "0";
+        setTimeout(() => document.getElementById("lock-screen").style.display = "none", 500);
+    } else {
+        alert("รหัสไม่ถูกต้อง!");
+        document.getElementById("passcodeInput").value = "";
+    }
+}
+
+// --- 2. ระบบค้นหาและ Enter ---
+document.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        if (document.activeElement.id === 'passcodeInput') checkPasscode();
+        if (document.activeElement.id === 'searchInput') searchWorker();
+    }
+});
+
+// --- 3. ดึงข้อมูล ---
 async function fetchData() {
     try {
-        const response = await fetch(API_URL);
-        workerData = await response.json();
-        console.log("ระบบพร้อม! เชื่อมต่อข้อมูลสำเร็จ:", workerData.length);
-    } catch (e) {
-        console.error("เชื่อมต่อฐานข้อมูลไม่ได้:", e);
-    }
+        const res = await fetch(API_URL);
+        workerData = await res.json();
+        console.log("Data Loaded:", workerData.length);
+    } catch (e) { console.log("Fetch Error"); }
 }
 fetchData();
 
-// 2. 🚩 ระบบกด Enter เพื่อค้นหา
-document.getElementById('searchInput').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        searchWorker();
-    }
-});
-
-// 3. 🚩 ระบบอนิเมชั่น Navbar เมื่อเลื่อนเมาส์ลง (Scroll)
-window.addEventListener('scroll', function() {
-    const nav = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        nav.classList.add('scrolled');
-    } else {
-        nav.classList.remove('scrolled');
-    }
-});
-
-// 4. ฟังก์ชันค้นหาแบบฉลาด
 function searchWorker() {
     const s = document.getElementById('searchInput').value.trim().toLowerCase();
     if (!s) return;
-
-    const result = workerData.find(w => 
-        (w["ID พนักงาน"] || "").toString().toLowerCase().includes(s) ||
-        (w["ชื่อ-นามสกุล"] || "").toString().toLowerCase().includes(s)
+    const w = workerData.find(x => 
+        (x["ID พนักงาน"] || "").toString().toLowerCase().includes(s) ||
+        (x["ชื่อ-นามสกุล"] || "").toString().toLowerCase().includes(s)
     );
-
-    if (result) {
-        displayWorker(result);
-        document.getElementById('searchInput').value = ""; // ล้างช่องค้นหาอัตโนมัติ
-    } else {
-        alert("ไม่พบข้อมูลพนักงานท่านนี้");
-    }
+    if (w) {
+        displayWorker(w);
+        document.getElementById('searchInput').blur();
+    } else alert("ไม่พบข้อมูล");
 }
 
-// 5. ฟังก์ชันแสดงผล (พร้อมอนิเมชั่นลอยขึ้น)
 function displayWorker(w) {
     const container = document.getElementById('workerList');
     
-    // สร้างโครง HTML (คงสไตล์ SpaceX ที่ลูกพี่ชอบ)
+    // 🚩 ผมเพิ่มส่วนของ Contact (เบอร์ติดต่อ) เข้าไปให้แล้วครับ
     container.innerHTML = `
         <div class="profile-card">
             <div class="p-img-wrapper">
@@ -76,35 +62,39 @@ function displayWorker(w) {
                      onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png';">
             </div>
             <div class="info-grid">
-                <div class="info-item"><label>Full Name</label><p>${w['ชื่อ-นามสกุล']}</p></div>
-                <div class="info-item"><label>Employee ID</label><p>${w['ID พนักงาน']}</p></div>
-                <div class="info-item"><label>Position</label><p>${w['ตำแหน่ง']}</p></div>
-                <div class="info-item"><label>Team / Area</label><p>${w['ทีม']} / ${w['พื้นที่การดูแล']}</p></div>
-                <div class="info-item"><label>Contact</label><p>${w['เบอร์ติดต่อ']}</p></div>
-                <div class="status-badge">CERTIFICATION: ${w['สถานะใบเซอร์'].toUpperCase()}</div>
+                <div class="info-item">
+                    <label>FULL NAME</label>
+                    <p>${w['ชื่อ-นามสกุล'] || "-"}</p>
+                </div>
+                <div class="info-item">
+                    <label>ID</label>
+                    <p>${w['ID พนักงาน'] || "-"}</p>
+                </div>
+                <div class="info-item">
+                    <label>POSITION</label>
+                    <p>${w['ตำแหน่ง'] || "-"}</p>
+                </div>
+                <div class="info-item">
+                    <label>TEAM</label>
+                    <p>${w['ทีม'] || "-"}</p>
+                </div>
+                
+                <div class="info-item">
+                    <label>CONTACT</label>
+                    <p><a href="tel:${w['เบอร์ติดต่อ']}" style="color:white; text-decoration:none;">${w['เบอร์ติดต่อ'] || "-"}</a></p>
+                </div>
+
+                <div class="status-badge">
+                    CERTIFICATE: ${(w['สถานะใบเซอร์'] || "N/A").toUpperCase()}
+                </div>
             </div>
         </div>
     `;
     
-    // 🚩 สั่งให้เลื่อนจอลงมาหาข้อมูลแบบนุ่มนวล
     container.scrollIntoView({ behavior: 'smooth' });
 }
-
-// 6. ฟังก์ชันแยกทีม
-function filterTeam(t) {
-    const filtered = workerData.filter(w => w['ทีม'] === t);
-    const container = document.getElementById('workerList');
-    let html = `<h3 style="letter-spacing:5px; text-align:center; margin-top:30px;">TEAM: ${t.toUpperCase()}</h3>`;
-    filtered.forEach(w => {
-        html += `<div style="padding:15px; border-bottom:1px solid #333; cursor:pointer;" onclick="displayWorkerByID('${w['ID พนักงาน']}')">
-                    ${w['ID พนักงาน']} - ${w['ชื่อ-นามสกุล']}
-                 </div>`;
-    });
-    container.innerHTML = html;
-    container.scrollIntoView({ behavior: 'smooth' });
-}
-
-function displayWorkerByID(id) {
-    const r = workerData.find(w => w["ID พนักงาน"].toString() === id);
-    if (r) displayWorker(r);
-}
+// Navbar Effect
+window.onscroll = () => {
+    const nav = document.querySelector('.navbar');
+    window.scrollY > 50 ? nav.classList.add('scrolled') : nav.classList.remove('scrolled');
+};

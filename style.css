@@ -38,7 +38,7 @@ body, html {
     padding: 0 40px;
 }
 
-.nav-logo { height: 25px; filter: brightness(0) invert(1); } /* ทำให้โลโก้เป็นสีขาว */
+.nav-logo { height: 25px; filter: brightness(0) invert(1); }
 
 .nav-menu a {
     color: var(--white);
@@ -81,9 +81,7 @@ body, html {
 }
 
 .sub-title { font-weight: 200; letter-spacing: 8px; font-size: 18px; margin-bottom: 5px; }
-
 .main-title { font-size: clamp(40px, 8vw, 80px); font-weight: 600; margin: 0; letter-spacing: -2px; }
-
 .project-desc { font-weight: 200; letter-spacing: 4px; color: #ccc; margin-top: 10px; }
 
 /* SEARCH BOX */
@@ -116,18 +114,12 @@ body, html {
     transition: 0.3s;
 }
 
-.spacex-btn:hover {
-    background: white;
-    color: black;
-}
+.spacex-btn:hover { background: white; color: black; }
 
-/* MAIN CONTENT & FILTER */
+/* MAIN AREA */
 .main-area { padding: 50px 0; background: var(--black); }
-
 .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
-
 .team-filter { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
-
 .filter-btn {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.2);
@@ -139,10 +131,9 @@ body, html {
     font-size: 13px;
     font-weight: 600;
 }
-
 .filter-btn:hover { background: var(--uniq-red); border-color: var(--uniq-red); }
 
-/* DASHBOARD RESULT (SpaceX Style) */
+/* PROFILE CARD */
 .profile-card {
     background: rgba(20, 20, 20, 0.95);
     border: 1px solid var(--glass);
@@ -150,24 +141,12 @@ body, html {
     grid-template-columns: 300px 1fr;
     padding: 40px;
     gap: 40px;
-    animation: slideInUp 0.8s ease;
+    animation: slideUpFade 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
-
-.p-img-wrapper { text-align: center; }
-
-.profile-img-large {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-    border: 1px solid var(--glass);
-}
-
+.profile-img-large { width: 100%; height: 400px; object-fit: cover; border: 1px solid var(--glass); }
 .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-
 .info-item label { color: #666; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
-
 .info-item p { font-size: 22px; margin: 5px 0 0 0; font-weight: 200; }
-
 .status-badge {
     grid-column: span 2;
     padding: 15px;
@@ -178,104 +157,55 @@ body, html {
     font-weight: 600;
 }
 
-@keyframes slideInUp {
-    from { opacity: 0; transform: translateY(50px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
+/* 📱 MOBILE RESPONSIVE */
 @media (max-width: 768px) {
-    .profile-card { grid-template-columns: 1fr; }
-    .info-grid { grid-template-columns: 1fr; }
+    .nav-container { padding: 0 20px; }
+    .main-title { font-size: 35px; }
+    .sub-title { font-size: 12px; letter-spacing: 4px; }
+    .search-box-wrapper { width: 90%; margin: 30px auto; }
+    .spacex-input { width: 150px; font-size: 16px; }
+    .team-filter { flex-wrap: wrap; gap: 10px; }
+    .filter-btn { padding: 10px 15px; font-size: 11px; flex: 1 1 40%; }
+    .profile-card { grid-template-columns: 1fr; padding: 20px; gap: 20px; }
+    .profile-img-large { height: 300px; }
+    .info-grid { grid-template-columns: 1fr; gap: 15px; }
 }
 
-/* 🌟 1. อนิเมชั่นตอนชี้เมาส์ (Hover Effects) */
-
-/* ปุ่มค้นหาและปุ่มแยกทีม */
-.spacex-btn, .filter-btn {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* สมูทแบบยานอวกาศ */
-    position: relative;
-    overflow: hidden;
+/* 🌟 ANIMATIONS */
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
 .spacex-btn:hover, .filter-btn:hover {
-    letter-spacing: 3px; /* ตัวหนังสือขยายออกนิดๆ ดูเท่ */
-    box-shadow: 0 0 15px rgba(204, 0, 0, 0.4); /* เรืองแสงสีแดง UNIQ */
-    transform: translateY(-2px); /* ลอยขึ้นนิดนึง */
+    letter-spacing: 3px;
+    box-shadow: 0 0 15px rgba(204, 0, 0, 0.4);
+    transform: translateY(-2px);
 }
 
-/* Card พนักงาน */
-.profile-card {
-    transition: all 0.5s ease;
-    cursor: default;
+/* 🔒 🚩 NEW: LOCK SCREEN SECTION (เพิ่มใหม่ตรงนี้ครับ) */
+#lock-screen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(20px);
+    transition: 0.5s;
 }
-
-.profile-card:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-/* 🌟 2. อนิเมชั่นตอนกดปุ่ม (Click Effects) */
-
-.spacex-btn:active, .filter-btn:active {
-    transform: scale(0.95); /* ปุ่มยุบตัวลงตอนกด */
-    opacity: 0.8;
-}
-
-/* 🌟 3. อนิเมชั่นตอนเปลี่ยนข้อมูล/โหลดหน้า (Page Transitions) */
-
-/* สร้างคลาสสำหรับ Slide Up */
-@keyframes slideUpFade {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-        filter: blur(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0);
-    }
-}
-
-/* ใส่เข้าไปในตัวหนังสือหน้าแรก */
-.hero-content {
-    animation: slideUpFade 1.2s ease-out;
-}
-
-/* ใส่เข้าไปใน Card พนักงาน (เวลาค้นหาเจอจะค่อยๆ ลอยขึ้นมา) */
-.profile-card {
-    animation: slideUpFade 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-/* 🌟 4. เมนู Navbar ตอน Scroll */
-.navbar.scrolled {
-    background: rgba(0, 0, 0, 0.95);
-    padding: 15px 0;
-    backdrop-filter: blur(10px);
-}
-
-/* --- โค้ดเดิมของลูกพี่ --- */
-
-/* 📱 ส่วนที่เพิ่มใหม่: สำหรับมือถือโดยเฉพาะ */
-@media (max-width: 768px) {
-    .nav-container { padding: 0 20px; }
-    .main-title { font-size: 35px; } /* ลดขนาดหัวข้อหน้าแรก */
-    .sub-title { font-size: 12px; letter-spacing: 4px; }
-    
-    .search-box-wrapper { width: 90%; margin: 30px auto; }
-    .spacex-input { width: 150px; font-size: 16px; } /* ปรับขนาด Input */
-    
-    .team-filter { flex-wrap: wrap; gap: 10px; } /* ปุ่มแยกทีมไม่ล้นจอ */
-    .filter-btn { padding: 10px 15px; font-size: 11px; flex: 1 1 40%; }
-
-    /* 🚩 จุดสำคัญ: ปรับ Card พนักงานจาก 2 คอลัมน์ เป็นแถวเดียว */
-    .profile-card {
-        grid-template-columns: 1fr; /* รูปอยู่บน ข้อมูลอยู่ล่าง */
-        padding: 20px;
-        gap: 20px;
-    }
-    .profile-img-large { height: 300px; }
-    .info-grid { grid-template-columns: 1fr; gap: 15px; }
-    .info-item p { font-size: 18px; }
+.lock-content { text-align: center; animation: slideUpFade 0.8s ease; }
+.lock-logo { height: 45px; margin-bottom: 20px; filter: brightness(0) invert(1); }
+#passcodeInput {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 15px;
+    font-size: 24px;
+    text-align: center;
+    width: 220px;
+    outline: none;
+    margin-bottom: 15px;
+    letter-spacing: 5px;
 }

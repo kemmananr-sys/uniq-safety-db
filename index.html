@@ -3,16 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UNIQ RED LINE | SAFETY DATABASE</title>
-    <link rel="stylesheet" href="style.css">
+    <title>UNIQ SAFETY DATABASE</title>
+    <link rel="stylesheet" href="style.css?v=2.1.0">
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script src="app.js"></script>
-
-    <link rel="stylesheet" href="style.css?v=1.0.1">
-    <script src="app.js?v=1.0.1"></script>
 </head>
 <body>
+
+    <div id="lock-screen">
+        <div class="lock-content">
+            <img src="Logo.png" alt="UNIQ Logo" class="lock-logo">
+            <h2>SAFETY DATABASE</h2>
+            <p>กรุณาใส่รหัสผ่านเพื่อเข้าใช้งาน</p>
+            <div class="passcode-wrapper">
+                <input type="password" id="passcodeInput" placeholder="PASSCODE" maxlength="6" autofocus>
+                <button onclick="checkPasscode()" class="spacex-btn">UNLOCK SYSTEM</button>
+            </div>
+        </div>
+    </div>
 
     <nav class="navbar">
         <div class="nav-container">
@@ -29,23 +36,26 @@
         <div class="hero-content">
             <h2 class="sub-title">UNIQUE ENGINEERING</h2>
             <h1 class="main-title">RED LINE PROJECT</h1>
+            <p class="project-desc">SAFETY PERSONNEL DATABASE SYSTEM</p>
+            
             <div class="search-box-wrapper">
-                <input type="text" id="searchInput" placeholder="NAME / ID" class="spacex-input">
+                <input type="text" id="searchInput" placeholder="ENTER NAME OR ID" class="spacex-input" autocomplete="off">
                 <button onclick="searchWorker()" class="spacex-btn">SEARCH</button>
             </div>
         </div>
     </header>
 
-    <main id="team-area" class="main-area">
+    <main class="main-area">
         <div class="container">
             <div class="team-filter">
                 <button class="filter-btn" onclick="filterTeam('Safety')">SAFETY</button>
                 <button class="filter-btn" onclick="filterTeam('Station B')">STATION B</button>
+                <button class="filter-btn" onclick="filterTeam('Depot')">DEPOT</button>
             </div>
             <div id="workerList" class="dashboard-display"></div>
         </div>
     </main>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=2.1.0"></script>
 </body>
 </html>
