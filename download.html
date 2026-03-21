@@ -2,75 +2,133 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>UNIQ SAFETY | DOWNLOADS</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2.8.0">
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;400;600&display=swap" rel="stylesheet">
+    
     <style>
-        /* สไตล์เฉพาะหน้าดาวน์โหลดเพื่อให้ดูพรีเมียมขึ้น */
+        /* สไตล์เฉพาะหน้าดาวน์โหลด (Internal CSS เพื่อความคุมความเป๊ะ) */
         .download-page {
-            padding-top: 120px;
+            padding-top: 140px; /* เว้นที่ให้ Navbar */
             min-height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('rodfai.jpg') no-repeat center center/cover;
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('rodfai.jpg') no-repeat center center/cover;
             background-attachment: fixed;
         }
+
+        /* 🚩 จุดสำคัญ: Container ต้องกว้างเท่าหน้าแรกเพื่อให้ขอบซ้ายตรงกัน */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            text-align: left;
+        }
+
+        .header-content {
+            margin-bottom: 50px;
+            animation: slideUpFade 0.6s ease;
+        }
+
+        /* 🚩 แก้ไข Grid: จัดเรียงการ์ดให้ตรงแนวขอบซ้ายเสมอ */
         .download-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            /* กำหนดความกว้างการ์ดให้คงที่ 340px เพื่อไม่ให้มันขยายจนเบี้ยว */
+            grid-template-columns: repeat(auto-fill, minmax(320px, 340px));
             gap: 25px;
-            margin-top: 40px;
+            justify-content: flex-start; /* บังคับเริ่มจากซ้ายเสมอ */
+            margin-bottom: 80px;
         }
+
         .doc-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px;
+            padding: 35px;
             transition: 0.4s;
-            position: relative;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 400px; /* บังคับความสูงให้เท่ากันทุกใบ */
         }
+
         .doc-card:hover {
             background: rgba(255, 255, 255, 0.08);
             border-color: var(--uniq-red);
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
+
         .doc-category {
             font-size: 10px;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             color: var(--uniq-red);
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
         }
+
         .doc-title {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 400;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            color: #fff;
         }
+
+        .doc-meta {
+            font-size: 11px;
+            color: #666;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+        }
+
         .download-btn {
-            display: inline-block;
-            border: 1px solid white;
-            color: white;
-            padding: 10px 25px;
+            display: block;
+            width: 100%;
+            text-align: center;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 14px 0;
             font-size: 12px;
             font-weight: 600;
             text-decoration: none;
             letter-spacing: 2px;
             transition: 0.3s;
         }
+
         .download-btn:hover {
-            background: white;
-            color: black;
+            background: #fff;
+            color: #000;
         }
+
+        .btn-disabled {
+            border-color: #333;
+            color: #444;
+            pointer-events: none;
+        }
+
+        /* ย้อนกลับ (Back Button) */
         .back-nav {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
         .back-nav a {
             color: #888;
             text-decoration: none;
             font-size: 12px;
             letter-spacing: 2px;
+            transition: 0.3s;
         }
-        .back-nav a:hover { color: white; }
+        .back-nav a:hover { color: var(--uniq-red); }
+
+        /* 📱 Mobile Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 0 25px; }
+            .download-page { padding-top: 100px; }
+            .main-title { font-size: 35px !important; }
+            .download-grid { 
+                grid-template-columns: 1fr; /* มือถือให้เรียงเดี่ยว */
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body class="download-page">
@@ -89,37 +147,47 @@
             <a href="index.html">← BACK TO DATABASE</a>
         </div>
 
-        <h2 class="sub-title" style="text-align: left;">UNIQ RESOURCES</h2>
-        <h1 class="main-title" style="text-align: left; font-size: 45px;">SAFETY DOCUMENTS</h1>
-        <p class="project-desc" style="text-align: left;">TECHNICAL SIGNS AND MISSION PROTOCOLS</p>
+        <div class="header-content">
+            <h2 class="sub-title" style="margin:0; opacity: 0.6;">UNIQ RESOURCES</h2>
+            <h1 class="main-title" style="margin: 10px 0; font-size: 45px;">SAFETY DOCUMENTS</h1>
+            <p class="project-desc" style="margin:0; border-left: 2px solid var(--uniq-red); padding-left: 15px;">TECHNICAL SIGNS AND MISSION PROTOCOLS</p>
+        </div>
 
         <div class="download-grid">
+            
             <div class="doc-card">
-                <div class="doc-category">Safety Sign</div>
-                <div class="doc-title">วัสดุรอการขนย้าย (Warning)</div>
-                <p style="font-size: 12px; color: #666; margin-bottom: 20px;">FILE TYPE: PDF (A4 SIZE)</p>
+                <div>
+                    <div class="doc-category">Safety Sign</div>
+                    <div class="doc-title">วัสดุรอการขนย้าย<br>(Warning)</div>
+                    <div class="doc-meta">FILE TYPE: PDF (A4 SIZE)</div>
+                </div>
                 <a href="docs/warning_moving.pdf" download class="download-btn">DOWNLOAD</a>
             </div>
 
             <div class="doc-card">
-                <div class="doc-category">Instruction</div>
-                <div class="doc-title">วัสดุรอการใช้งาน (Stationary)</div>
-                <p style="font-size: 12px; color: #666; margin-bottom: 20px;">FILE TYPE: PNG (HIGH RES)</p>
+                <div>
+                    <div class="doc-category">Instruction</div>
+                    <div class="doc-title">วัสดุรอการใช้งาน<br>(Stationary)</div>
+                    <div class="doc-meta">FILE TYPE: PNG (HIGH RES)</div>
+                </div>
                 <a href="docs/stationary_sign.png" download class="download-btn">DOWNLOAD</a>
             </div>
 
             <div class="doc-card">
-                <div class="doc-category">Protocol</div>
-                <div class="doc-title">ขั้นตอนการปฏิบัติงานพื้นฐาน</div>
-                <p style="font-size: 12px; color: #666; margin-bottom: 20px;">FILE TYPE: PDF</p>
-                <a href="#" class="download-btn">COMING SOON</a>
+                <div>
+                    <div class="doc-category">Protocol</div>
+                    <div class="doc-title">ขั้นตอนการปฏิบัติงานพื้นฐาน</div>
+                    <div class="doc-meta">FILE TYPE: PDF</div>
+                </div>
+                <a href="#" class="download-btn btn-disabled">COMING SOON</a>
             </div>
+
         </div>
     </div>
 
-    <div class="footer" style="margin-top: 100px; text-align: center; color: #444; font-size: 10px; letter-spacing: 2px; padding-bottom: 40px;">
+    <footer style="text-align: center; color: #333; font-size: 10px; letter-spacing: 2px; padding-bottom: 50px;">
         UNIQUE ENGINEERING AND CONSTRUCTION PCL. ALL RIGHTS RESERVED.
-    </div>
+    </footer>
 
 </body>
 </html>

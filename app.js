@@ -1,80 +1,94 @@
 // ==========================================
-// 1. CONFIGURATION (ตั้งค่าพื้นฐาน)
+// 1. CONFIGURATION & STATE (ตั้งค่าและตัวแปรสถานะ)
 // ==========================================
 const API_URL = "https://script.google.com/macros/s/AKfycbyD6RlvRATllKL3MIuw-iQQi4Ye-WaHjH4bESJfjGH82JEmAa6yTVj9293XR3RDUu0IKQ/exec";
 const MY_PASSCODE = "303173"; 
-let workerData = []; // ประกาศตัวแปรเก็บข้อมูลพนักงาน
+let workerData = []; 
+
+// ตัวแปรสำหรับระบบปุ่ม Back อัจฉริยะ
+let lastViewMode = "search"; // "search" หรือ "list"
+let lastTitle = ""; 
+let lastMembers = [];
 
 // ==========================================
-// 2. SECURITY SYSTEM (ระบบล็อกหน้าจอ)
+// 2. SECURITY SYSTEM
 // ==========================================
 
-// เช็คสถานะการเข้าถึงจาก Session
 if (sessionStorage.getItem("accessGranted") === "true") {
     const lock = document.getElementById("lock-screen");
     if (lock) lock.style.display = "none";
 }
 
-// ฟังก์ชันเช็ครหัสผ่าน
-function checkPasscode() {
+async function checkPasscode() {
     const passcodeField = document.getElementById("passcodeInput");
+    const lockTitle = document.querySelector(".lock-content h2"); // ดึงหัวข้อมาทำเอฟเฟกต์
     const val = passcodeField.value;
 
     if (val === MY_PASSCODE) {
+        // 1. เริ่มเอฟเฟกต์ถอดรหัสที่ตัวหนังสือ
+        if(lockTitle) lockTitle.classList.add("decrypting");
+        
         sessionStorage.setItem("accessGranted", "true");
+        await fetchData(); 
+
         const lock = document.getElementById("lock-screen");
-        lock.style.opacity = "0";
+        
+        // 2. ใส่ท่าไม้ตาย Unlock (จอระเบิดออก)
+        lock.classList.add("unlock-animate");
+        
+        // 3. สั่งให้ Hero Content ค่อยๆ ดีดตัวขึ้นมา
+        document.body.classList.add("loaded");
+
         setTimeout(() => {
             lock.style.display = "none";
-        }, 500);
+        }, 800); // รอให้จบอนิเมชั่น 0.8 วินาที
     } else {
-        alert("รหัสไม่ถูกต้อง! กรุณาลองใหม่");
+        alert("รหัสไม่ถูกต้อง!");
         passcodeField.value = "";
         passcodeField.focus();
     }
 }
 
-// ระบบกด Enter (รองรับทั้งหน้าล็อกและหน้าค้นหา)
-document.addEventListener('keypress', function (e) {
+document.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         const activeID = document.activeElement.id;
-        if (activeID === 'passcodeInput') {
-            checkPasscode();
-        } else if (activeID === 'searchInput') {
-            searchWorker();
-        }
+        if (activeID === 'passcodeInput') checkPasscode();
+        else if (activeID === 'searchInput') searchWorker();
     }
 });
 
 // ==========================================
-// 3. DATA MANAGEMENT (การจัดการข้อมูล)
+// 3. DATA MANAGEMENT
 // ==========================================
 
-// ดึงข้อมูลจาก Google Sheets
 async function fetchData() {
     try {
         const res = await fetch(API_URL);
         workerData = await res.json();
-        console.log("Data Loaded Successfully. Total records:", workerData.length);
+        console.log("Data Loaded:", workerData.length);
     } catch (e) { 
         console.error("Fetch Error:", e);
-        alert("ไม่สามารถโหลดข้อมูลจาก Server ได้");
     }
 }
 fetchData();
 
-// ฟังก์ชันค้นหาพนักงาน (Search)
 function searchWorker() {
     const s = document.getElementById('searchInput').value.trim().toLowerCase();
     if (!s) return;
     
-    const w = workerData.find(x => 
+    // ค้นหาครอบคลุม ID, ชื่อจริง, และชื่อเล่น
+    const results = workerData.filter(x => 
         (x["ID พนักงาน"] || "").toString().toLowerCase().includes(s) ||
-        (x["ชื่อ-นามสกุล"] || "").toString().toLowerCase().includes(s)
+        (x["ชื่อ-นามสกุล"] || "").toString().toLowerCase().includes(s) ||
+        (x["ชื่อเล่น"] || "").toString().toLowerCase().includes(s)
     );
     
-    if (w) {
-        displayWorker(w);
+    if (results.length === 1) {
+        lastViewMode = "search"; // มาจากการค้นหาโดยตรง
+        displayWorker(results[0]);
+        document.getElementById('searchInput').blur();
+    } else if (results.length > 1) {
+        renderListView(`SEARCH: "${s.toUpperCase()}"`, results);
         document.getElementById('searchInput').blur();
     } else {
         alert("ไม่พบข้อมูลพนักงานท่านนี้");
@@ -82,15 +96,21 @@ function searchWorker() {
 }
 
 // ==========================================
-// 4. DISPLAY FUNCTIONS (การแสดงผล)
+// 4. DISPLAY FUNCTIONS (ปรับแต่งสวยงาม)
 // ==========================================
 
-// แสดงการ์ดข้อมูลพนักงานแบบละเอียด (Card View)
 function displayWorker(w) {
     const container = document.getElementById('workerList');
     
     container.innerHTML = `
-        <div class="profile-card">
+        <div class="profile-card" style="position: relative; animation: fadeIn 0.5s ease;">
+            <button onclick="closeProfile()" 
+                    style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.1); 
+                           border: 1px solid rgba(255,255,255,0.2); color: white; cursor: pointer; 
+                           padding: 8px 12px; font-size: 11px; border-radius: 4px; backdrop-filter: blur(5px);">
+                ✕ ${lastViewMode === 'list' ? 'BACK TO LIST' : 'CLOSE'}
+            </button>
+
             <div class="p-img-wrapper">
                 <img src="img/${w['ลิงก์รูปภาพ']}" class="profile-img-large" 
                      onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png';">
@@ -98,24 +118,15 @@ function displayWorker(w) {
             <div class="info-grid">
                 <div class="info-item">
                     <label>FULL NAME</label>
-                    <p>${w['ชื่อ-นามสกุล'] || "-"}</p>
+                    <p>${w['ชื่อ-นามสกุล'] || "-"} ${w['ชื่อเล่น'] ? '<span style="color:var(--uniq-red)">('+w['ชื่อเล่น']+')</span>' : ''}</p>
                 </div>
-                <div class="info-item">
-                    <label>ID</label>
-                    <p>${w['ID พนักงาน'] || "-"}</p>
-                </div>
-                <div class="info-item">
-                    <label>POSITION</label>
-                    <p>${w['ตำแหน่ง'] || "-"}</p>
-                </div>
+                <div class="info-item"><label>ID</label><p>${w['ID พนักงาน'] || "-"}</p></div>
+                <div class="info-item"><label>POSITION</label><p>${w['ตำแหน่ง'] || "-"}</p></div>
                 <div class="info-item">
                     <label>RESPONSIBLE AREA</label>
                     <p style="color: #ffcc00;">${w['พื้นที่การดูแล'] || "-"}</p>
                 </div>
-                <div class="info-item">
-                    <label>TEAM</label>
-                    <p>${w['ทีม'] || "-"}</p>
-                </div>
+                <div class="info-item"><label>TEAM</label><p>${w['ทีม'] || "-"}</p></div>
                 <div class="info-item">
                     <label>CONTACT</label>
                     <p><a href="tel:${w['เบอร์ติดต่อ']}" style="color:white; text-decoration:none;">${w['เบอร์ติดต่อ'] || "-"}</a></p>
@@ -126,31 +137,36 @@ function displayWorker(w) {
             </div>
         </div>
     `;
-    
     container.scrollIntoView({ behavior: 'smooth' });
 }
 
-// ฟังก์ชันช่วยแสดงผลรายชื่อ (List View)
 function renderListView(title, members) {
+    lastViewMode = "list"; 
+    lastTitle = title;
+    lastMembers = members;
+
     const container = document.getElementById('workerList');
     let html = `
-        <div style="border-left: 4px solid var(--uniq-red); padding-left: 20px; margin: 40px 0 20px 0;">
-            <h2 style="margin:0; letter-spacing:2px;">${title.toUpperCase()}</h2>
-            <p style="color:#888;">พนักงานทั้งหมด ${members.length} ท่าน</p>
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; border-left: 4px solid var(--uniq-red); padding-left: 20px; margin: 40px 0 20px 0;">
+            <div>
+                <h2 style="margin:0; letter-spacing:2px; font-size:1.2rem;">${title.toUpperCase()}</h2>
+                <p style="color:#888; font-size:0.8rem; margin:5px 0 0 0;">พบพนักงานทั้งหมด ${members.length} ท่าน</p>
+            </div>
+            <button onclick="clearDisplay()" style="background:none; border:1px solid #444; color:#888; padding:5px 10px; border-radius:4px; font-size:10px; cursor:pointer;">CLOSE ✕</button>
         </div>
-        <div class="worker-list-grid" style="display:grid; gap:10px; max-width:800px; margin:0 auto 50px auto;">
+        <div class="worker-list-grid" style="display:grid; gap:8px; max-width:800px; margin:0 auto 50px auto;">
     `;
 
     members.forEach(w => {
         html += `
             <div class="worker-row" onclick="displayWorkerByID('${w['ID พนักงาน']}')" 
                  style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); 
-                        padding:15px 25px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; align-items:center; gap:20px;">
-                    <span style="color:var(--uniq-red); font-size:14px;">#${w['ID พนักงาน']}</span>
-                    <span style="font-size:18px;">${w['ชื่อ-นามสกุล']}</span>
+                        padding:12px 20px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; border-radius:8px; transition:0.3s;">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <span style="color:var(--uniq-red); font-weight:bold; font-size:12px;">#${w['ID พนักงาน']}</span>
+                    <span style="font-size:16px;">${w['ชื่อ-นามสกุล']} ${w['ชื่อเล่น'] ? '<small style="color:#888;">('+w['ชื่อเล่น']+')</small>' : ''}</span>
                 </div>
-                <div style="opacity:0.5; font-size:12px;">VIEW ></div>
+                <div style="opacity:0.3; font-size:10px;">VIEW ❯</div>
             </div>
         `;
     });
@@ -160,84 +176,73 @@ function renderListView(title, members) {
     container.scrollIntoView({ behavior: 'smooth' });
 }
 
+function closeProfile() {
+    if (lastViewMode === "list") {
+        renderListView(lastTitle, lastMembers);
+    } else {
+        clearDisplay();
+    }
+}
+
+function clearDisplay() {
+    const container = document.getElementById('workerList');
+    const searchInput = document.getElementById('searchInput');
+    container.innerHTML = ""; 
+    if(searchInput) {
+        searchInput.value = "";
+        searchInput.focus();
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // ==========================================
-// 5. FILTER FUNCTIONS (ระบบกรองข้อมูล)
+// 5. FILTER & QR SYSTEM
 // ==========================================
 
-// กรองตามทีม (Team)
 function filterTeam(teamName) {
     const members = workerData.filter(w => w['ทีม'].toString().includes(teamName));
-    if (members.length === 0) {
-        alert(`ไม่พบข้อมูลพนักงานในทีม: ${teamName}`);
-        return;
-    }
+    if (members.length === 0) return alert(`ไม่พบทีม: ${teamName}`);
     renderListView(`${teamName} TEAM`, members);
 }
 
-// กรองตามพื้นที่ (Area)
 function filterArea(areaName) {
     const members = workerData.filter(w => w['พื้นที่การดูแล'].toString().includes(areaName));
-    if (members.length === 0) {
-        alert(`ไม่พบพนักงานในพื้นที่: ${areaName}`);
-        return;
-    }
+    if (members.length === 0) return alert(`ไม่พบพื้นที่: ${areaName}`);
     renderListView(`${areaName} AREA`, members);
 }
 
-// ค้นหาด้วย ID (ใช้เมื่อกดเลือกจาก List View)
 function displayWorkerByID(id) {
     const worker = workerData.find(w => w["ID พนักงาน"].toString() === id.toString());
-    if (worker) {
-        displayWorker(worker);
-    }
+    if (worker) displayWorker(worker);
 }
 
-// ==========================================
-// 6. QR CODE SYSTEM (ระบบรองรับการสแกน QR)
-// ==========================================
-
-/**
- * ฟังก์ชันตรวจสอบ Parameter 'id' จาก URL 
- * เช่น https://.../index.html?id=1001
- * ถ้าตรวจเจอ จะทำการดึงข้อมูลพนักงานคนนั้นขึ้นมาแสดงทันที
- */
 async function checkQRScan() {
-    // 1. ดึงค่า ID จาก URL
     const urlParams = new URLSearchParams(window.location.search);
     const qrID = urlParams.get('id');
 
     if (qrID) {
-        console.log("QR Scan Detected. ID:", qrID);
-        
-        // 2. รอจนกว่าข้อมูลพนักงานจะถูกโหลดเสร็จ (ป้องกันกรณี Fetch ข้อมูลช้า)
-        let retryCount = 0;
-        const maxRetries = 10; // ลองเช็คข้อมูล 10 ครั้ง (ครั้งละ 0.5 วินาที)
-
-        const checkDataReady = setInterval(() => {
-            if (workerData && workerData.length > 0) {
-                clearInterval(checkDataReady);
-                
-                // 3. ค้นหาพนักงานจาก ID ที่ได้จาก QR
-                const worker = workerData.find(w => 
-                    (w["ID พนักงาน"] || "").toString().toLowerCase() === qrID.toLowerCase()
-                );
-
-                if (worker) {
-                    displayWorker(worker); // ใช้ฟังก์ชันแสดงการ์ดเดิมที่ลูกพี่มีอยู่แล้ว
-                    console.log("QR Worker Found:", worker['ชื่อ-นามสกุล']);
-                } else {
-                    console.warn("QR ID not found in database.");
-                }
-            } else {
-                retryCount++;
-                if (retryCount >= maxRetries) {
-                    clearInterval(checkDataReady);
-                    console.error("Data loading timeout for QR scan.");
-                }
-            }
+        lastViewMode = "search"; // สแกน QR ให้ถือว่าเป็นโหมดค้นหาเดี่ยว
+        let retry = 0;
+        const check = setInterval(() => {
+            if (workerData.length > 0) {
+                clearInterval(check);
+                const w = workerData.find(x => (x["ID พนักงาน"] || "").toString().toLowerCase() === qrID.toLowerCase());
+                if (w) displayWorker(w);
+            } else if (++retry > 10) clearInterval(check);
         }, 500);
     }
 }
 
-// สั่งให้ระบบเริ่มทำงานเมื่อโหลดหน้าเว็บเสร็จ
+// เพิ่มฟังก์ชันนี้เพื่อเช็คสถานะตอน Refresh หน้าจอ (F5)
+window.addEventListener('load', () => {
+    if (sessionStorage.getItem("accessGranted") === "true") {
+        // ถ้าเคยผ่านรหัสมาแล้ว ให้ใส่คลาส loaded ทันทีเพื่อให้เนื้อหาโชว์
+        document.body.classList.add("loaded");
+        
+        // และซ่อนหน้า Lock Screen ทันทีไม่ต้องรอ
+        const lock = document.getElementById("lock-screen");
+        if (lock) lock.style.display = "none";
+    }
+});
+
 window.addEventListener('load', checkQRScan);

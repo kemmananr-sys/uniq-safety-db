@@ -1,3 +1,6 @@
+/* ==========================================
+   1. VARIABLES & BASE (ตั้งค่าพื้นฐาน)
+   ========================================== */
 :root {
     --uniq-red: #cc0000;
     --black: #000000;
@@ -18,7 +21,9 @@ body, html {
     overflow-x: hidden;
 }
 
-/* NAVBAR STYLE */
+/* ==========================================
+   2. NAVIGATION (แถบบาร์ด้านบน)
+   ========================================== */
 .navbar {
     position: fixed;
     top: 0;
@@ -49,7 +54,9 @@ body, html {
     letter-spacing: 2px;
 }
 
-/* HERO SECTION */
+/* ==========================================
+   3. HERO & SEARCH (หน้าแรกและช่องค้นหา)
+   ========================================== */
 .hero-section {
     position: relative;
     height: 100vh;
@@ -74,17 +81,10 @@ body, html {
     z-index: -1;
 }
 
-.hero-content {
-    position: relative;
-    z-index: 10;
-    max-width: 800px;
-}
-
 .sub-title { font-weight: 200; letter-spacing: 8px; font-size: 18px; margin-bottom: 5px; }
 .main-title { font-size: clamp(40px, 8vw, 80px); font-weight: 600; margin: 0; letter-spacing: -2px; }
 .project-desc { font-weight: 200; letter-spacing: 4px; color: #ccc; margin-top: 10px; }
 
-/* SEARCH BOX */
 .search-box-wrapper {
     margin-top: 50px;
     display: flex;
@@ -114,26 +114,63 @@ body, html {
     transition: 0.3s;
 }
 
-.spacex-btn:hover { background: white; color: black; }
+.spacex-btn:hover { background: white; color: black; letter-spacing: 3px; }
 
-/* MAIN AREA */
-.main-area { padding: 50px 0; background: var(--black); }
-.container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
-.team-filter { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
+/* ==========================================
+   4. FILTER SYSTEM (ระบบกรองพื้นที่และทีม)
+   ========================================== */
+.filter-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.filter-group { margin-bottom: 35px; }
+
+.group-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #666;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+.button-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
 .filter-btn {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.2);
     color: white;
-    padding: 10px 30px;
+    padding: 10px 25px;
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
     font-size: 13px;
     font-weight: 600;
 }
-.filter-btn:hover { background: var(--uniq-red); border-color: var(--uniq-red); }
 
-/* PROFILE CARD */
+/* แยกสีให้ชัดเจน */
+.area-btn { border-color: rgba(255,255,255,0.3); }
+.team-btn { border-color: var(--uniq-red); color: var(--uniq-red); }
+
+.filter-btn:hover {
+    background: white;
+    color: black !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255,255,255,0.1);
+}
+
+/* ==========================================
+   5. PROFILE & WORKER LIST (การแสดงผลพนักงาน)
+   ========================================== */
+.main-area { padding: 50px 0; background: var(--black); }
+
 .profile-card {
     background: rgba(20, 20, 20, 0.95);
     border: 1px solid var(--glass);
@@ -141,12 +178,15 @@ body, html {
     grid-template-columns: 300px 1fr;
     padding: 40px;
     gap: 40px;
+    margin-bottom: 40px;
     animation: slideUpFade 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
+
 .profile-img-large { width: 100%; height: 400px; object-fit: cover; border: 1px solid var(--glass); }
 .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
 .info-item label { color: #666; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
 .info-item p { font-size: 22px; margin: 5px 0 0 0; font-weight: 200; }
+
 .status-badge {
     grid-column: span 2;
     padding: 15px;
@@ -157,33 +197,15 @@ body, html {
     font-weight: 600;
 }
 
-/* 📱 MOBILE RESPONSIVE */
-@media (max-width: 768px) {
-    .nav-container { padding: 0 20px; }
-    .main-title { font-size: 35px; }
-    .sub-title { font-size: 12px; letter-spacing: 4px; }
-    .search-box-wrapper { width: 90%; margin: 30px auto; }
-    .spacex-input { width: 150px; font-size: 16px; }
-    .team-filter { flex-wrap: wrap; gap: 10px; }
-    .filter-btn { padding: 10px 15px; font-size: 11px; flex: 1 1 40%; }
-    .profile-card { grid-template-columns: 1fr; padding: 20px; gap: 20px; }
-    .profile-img-large { height: 300px; }
-    .info-grid { grid-template-columns: 1fr; gap: 15px; }
+.worker-row:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    transform: translateX(10px);
+    transition: 0.3s;
 }
 
-/* 🌟 ANIMATIONS */
-@keyframes slideUpFade {
-    from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
-    to { opacity: 1; transform: translateY(0); filter: blur(0); }
-}
-
-.spacex-btn:hover, .filter-btn:hover {
-    letter-spacing: 3px;
-    box-shadow: 0 0 15px rgba(204, 0, 0, 0.4);
-    transform: translateY(-2px);
-}
-
-/* 🔒 🚩 NEW: LOCK SCREEN SECTION (เพิ่มใหม่ตรงนี้ครับ) */
+/* ==========================================
+   6. LOCK SCREEN (ระบบล็อกรหัสผ่าน)
+   ========================================== */
 #lock-screen {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -193,19 +215,173 @@ body, html {
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(20px);
-    transition: 0.5s;
+    transition: 0.8s;
 }
+
 .lock-content { text-align: center; animation: slideUpFade 0.8s ease; }
-.lock-logo { height: 45px; margin-bottom: 20px; filter: brightness(0) invert(1); }
+.lock-logo { height: 45px; margin-bottom: 25px; filter: brightness(0) invert(1); }
+
 #passcodeInput {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.2);
     color: white;
     padding: 15px;
-    font-size: 24px;
+    font-size: 28px;
     text-align: center;
-    width: 220px;
+    width: 250px;
     outline: none;
     margin-bottom: 15px;
-    letter-spacing: 5px;
+    letter-spacing: 8px;
+    font-weight: bold;
 }
+
+/* ==========================================
+   7. ANIMATIONS & RESPONSIVE (เอฟเฟกต์และมือถือ)
+   ========================================== */
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@media (max-width: 768px) {
+    .nav-container { padding: 0 20px; }
+    .main-title { font-size: 35px; }
+    .sub-title { font-size: 12px; letter-spacing: 4px; }
+    
+    .search-box-wrapper { width: 90%; margin: 30px auto; }
+    .spacex-input { width: 150px; font-size: 16px; }
+    
+    .filter-btn {
+        flex: 1 1 43%; /* ปุ่มในมือถือจะเรียงคู่กัน กดง่าย */
+        padding: 12px 10px;
+        font-size: 11px;
+    }
+    
+    .profile-card { grid-template-columns: 1fr; padding: 20px; gap: 20px; }
+    .profile-img-large { height: 320px; }
+    .info-grid { grid-template-columns: 1fr; gap: 15px; }
+    .info-item p { font-size: 18px; }
+}
+
+/* ==========================================
+   THE "CYBER UNIQ" ANIMATION (ULTRA TECH)
+   ========================================== */
+
+/* 1. โปรไฟล์เด้งแบบ "Holographic" (จาง-ชัด-ขยาย) */
+@keyframes profileCyberIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) skewX(-10deg);
+        filter: brightness(2) blur(15px);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.05) skewX(0deg);
+        filter: brightness(1.5) blur(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1) blur(0);
+    }
+}
+
+.profile-card {
+    animation: profileCyberIn 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards !important;
+    border: 1px solid rgba(204, 0, 0, 0.3) !important;
+    box-shadow: 0 0 20px rgba(204, 0, 0, 0.1), inset 0 0 10px rgba(255,255,255,0.02);
+    position: relative;
+}
+
+/* 2. รายชื่อโผล่แบบ "Digital Scan" (สไลด์จากขวา+ขีดแดง) */
+@keyframes listScanIn {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+        border-right: 10px solid var(--uniq-red);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+        border-right: 0px solid transparent;
+    }
+}
+
+.worker-row {
+    animation: listScanIn 0.4s ease-out both;
+    position: relative;
+    overflow: hidden;
+}
+
+/* เอฟเฟกต์เวลา Hover (ให้ความรู้สึกเหมือนกำลังเลือกเป้าหมาย) */
+.worker-row:hover {
+    background: linear-gradient(90deg, rgba(204,0,0,0.2) 0%, transparent 100%) !important;
+    transform: scale(1.01) translateX(5px);
+    border-left: 3px solid var(--uniq-red) !important;
+}
+
+/* 3. ช่อง Search เรืองแสงเวลาพิมพ์ */
+.search-box-wrapper:focus-within {
+    border-bottom: 2px solid var(--uniq-red) !important;
+    filter: drop-shadow(0 0 8px rgba(204, 0, 0, 0.5));
+    transition: 0.3s;
+}
+
+/* แถม: เอฟเฟกต์ปุ่ม SpaceX ให้ดูเป็นเหล็กกล้ามากขึ้น */
+.spacex-btn {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    position: relative;
+    transition: 0.2s;
+}
+
+.spacex-btn:hover {
+    background: var(--uniq-red) !important;
+    color: white !important;
+    border-color: var(--uniq-red) !important;
+    box-shadow: 0 0 15px rgba(204, 0, 0, 0.6);
+}
+
+/* ==========================================
+   SYSTEM UNLOCK ANIMATION (เพิ่มใหม่)
+   ========================================== */
+
+/* ท่าไม้ตายตอนปลดล็อก: จอจะระเบิดออกและจางหายแบบนุ่มนวล */
+.unlock-animate {
+    transform: scale(1.2); 
+    filter: blur(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.4s cubic-bezier(0.85, 0, 0.15, 1);
+}
+
+/* อนิเมชั่นตัวหนังสือ Safety Database ตอนใส่รหัส (Decryption Effect) */
+.decrypting {
+    animation: decryptText 0.3s ease-in-out infinite;
+}
+
+@keyframes decryptText {
+    0% { letter-spacing: 5px; filter: blur(0); }
+    /* 🚩 เปลี่ยนจาก var(--uniq-red) เป็นสีเขียว #00ff00 (Neon Green) */
+    50% { letter-spacing: 12px; filter: blur(1px); color: #00ff00; text-shadow: 0 0 10px #00ff00; } 
+    100% { letter-spacing: 5px; filter: blur(0); }
+}
+
+/* เตรียม Hero Content ให้ค่อยๆ ตื่นทีละอย่าง */
+.hero-content > * {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 0.8s cubic-bezier(0.2, 1, 0.2, 1);
+}
+
+/* ทำให้ถ้ามีคลาส loaded แล้วทุกอย่างต้องโชว์ (ย้ำอีกรอบเพื่อกันพลาด) */
+.loaded .hero-content > * {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* ตั้งจังหวะ Delay (Stagger) ให้ดูเหมือนเครื่องกำลัง Online */
+.loaded .sub-title { transition-delay: 0.2s; }
+.loaded .main-title { transition-delay: 0.4s; }
+.loaded .project-desc { transition-delay: 0.6s; }
+.loaded .search-box-wrapper { transition-delay: 0.4s; }
