@@ -187,6 +187,12 @@ function closeProfile() {
 function clearDisplay() {
     const container = document.getElementById('workerList');
     const searchInput = document.getElementById('searchInput');
+
+// --- เพิ่มบรรทัดนี้เพื่อให้แถบปุ่มเหลืองหายไป ---
+    const subContainer = document.getElementById('subTeamContainer');
+    if (subContainer) subContainer.style.display = "none";
+    // ---------------------------------------
+
     container.innerHTML = ""; 
     if(searchInput) {
         searchInput.value = "";
@@ -244,5 +250,59 @@ window.addEventListener('load', () => {
         if (lock) lock.style.display = "none";
     }
 });
+
+// --- วางต่อท้ายไฟล์ app.js ---
+
+// 1. กำหนดโครงสร้างทีมย่อย (แก้ชื่อให้ตรงกับใน Google Sheet นะครับ)
+const teamStructure = {
+    'TBM': ['Enigneering Tunnel', 'Enigneering GEO Tunnel', 'Enigneering TAM', 'TAM Supervisor', 'Foreman', 'Rig Operator / TBM Operator', 'Erector and Grout operator Team', 'Supervisor', 'Erector and Grout operator Team', 'Surface Team', 'Mechanic & Electrician'],
+    'Station PP25': ['PP25', 'IVS06',],
+    'Station PP26': ['PP26','VS02','Transition/C&C/VS03','VS02/VS03'],
+    'Safety': ['office', 'Station PP26', 'Station PP25', 'TBM']
+};
+
+// 2. ฟังก์ชันเมื่อกดเลือกทีมหลัก
+function selectMainTeam(mainTeam) {
+    // กรองรายชื่อทีมหลักก่อน (เรียกใช้ฟังก์ชันเดิมที่คุณมี)
+    filterTeam(mainTeam); 
+
+    const subContainer = document.getElementById('subTeamContainer');
+    const subButtons = document.getElementById('subTeamButtons');
+
+    if (!subContainer || !subButtons) return; // กัน Error ถ้าหา ID ไม่เจอ
+
+    subButtons.innerHTML = ""; // ล้างปุ่มเก่า
+
+    if (teamStructure[mainTeam]) {
+        subContainer.style.display = "block";
+        teamStructure[mainTeam].forEach(sub => {
+            const btn = document.createElement('button');
+            btn.className = "filter-btn sub-btn";
+            btn.innerText = sub;
+            btn.onclick = () => filterSubInsideMain(mainTeam, sub);
+            subButtons.appendChild(btn);
+        });
+    } else {
+        subContainer.style.display = "none";
+    }
+}
+
+// แก้ไขฟังก์ชันเดิมให้เป็นแบบนี้ครับ
+function filterSubInsideMain(main, sub) {
+    const members = workerData.filter(w => {
+        // ดึงค่าจากคอลัมน์ 'ทีม' และ 'ทีมย่อย' มาเช็คพร้อมกัน
+        const mainTeamVal = (w['ทีม'] || "").toString();
+        const subTeamVal = (w['ทีมย่อย'] || "").toString(); // <--- นี่คือคอลัมน์ใหม่ที่คุณสร้าง
+        
+        // ต้องตรงทั้งทีมหลัก และทีมย่อย
+        return mainTeamVal.includes(main) && subTeamVal.includes(sub);
+    });
+
+    if (members.length === 0) {
+        return alert(`ไม่พบพนักงานในหน่วย ${sub} ของทีม ${main}`);
+    }
+    
+    renderListView(`${main} > ${sub}`, members);
+}
 
 window.addEventListener('load', checkQRScan);

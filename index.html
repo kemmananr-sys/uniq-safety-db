@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>UNIQ SAFETY DATABASE</title>
-    <link rel="stylesheet" href="style.css?v=4.2.0">
+    <link rel="stylesheet" href="style.css?v=4.5.0">
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -52,19 +52,25 @@
                 <div class="filter-group">
                     <p class="group-label">OPERATIONAL AREA (พื้นที่การทำงาน)</p>
                     <div class="button-row">
-                        <button class="filter-btn area-btn" onclick="filterArea('Station B')">สายสีม่วง</button>
-                        <button class="filter-btn area-btn" onclick="filterArea('Depot')">บ้านไผ่-นครพนม</button>
-                        <button class="filter-btn area-btn" onclick="filterArea('Tunnel')">พระราม3</button>
+                        <button class="filter-btn area-btn" onclick="filterArea('สายสีม่วง')">สายสีม่วง</button>
+                        <button class="filter-btn area-btn" onclick="filterArea('บ้านไผ่-นครพนม')">บ้านไผ่-นครพนม</button>
+                        <button class="filter-btn area-btn" onclick="filterArea('พระราม3')">พระราม3</button>
                     </div>
                 </div>
 
                 <div class="filter-group">
                     <p class="group-label">ORGANIZATION TEAM (สังกัดทีม)</p>
                     <div class="button-row">
-                        <button class="filter-btn team-btn" onclick="filterTeam('Safety')">SAFETY</button>
-                        <button class="filter-btn team-btn" onclick="filterTeam('TBM')">TBM</button>
-                        <button class="filter-btn team-btn" onclick="filterTeam('Station')">STATION</button>
-                        <button class="filter-btn team-btn" onclick="filterTeam('QC')">QC</button>
+                        <button class="filter-btn team-btn" onclick="selectMainTeam('TBM')">TBM</button>
+                        <button class="filter-btn team-btn" onclick="selectMainTeam('Station PP25')">STATION PP25</button>
+                        <button class="filter-btn team-btn" onclick="selectMainTeam('Station PP26')">STATION PP26</button>
+                        <button class="filter-btn team-btn" onclick="selectMainTeam('Safety')">SAFETY</button>
+                    </div>
+                </div>
+
+                <div id="subTeamContainer" class="filter-group" style="display:none; margin-top: 15px; animation: fadeIn 0.3s;">
+                    <p class="group-label" id="subTeamLabel" style="color: var(--uniq-red);">SUB-UNIT (หน่วยงานย่อย)</p>
+                    <div id="subTeamButtons" class="button-row">
                     </div>
                 </div>
             </div>
@@ -77,6 +83,6 @@
         </div>
     </main>
 
-    <script src="app.js?v=4.2.0"></script>
+    <script src="app.js?v=4.5.0"></script>
 </body>
 </html>

@@ -385,3 +385,28 @@ body, html {
 .loaded .main-title { transition-delay: 0.4s; }
 .loaded .project-desc { transition-delay: 0.6s; }
 .loaded .search-box-wrapper { transition-delay: 0.4s; }
+
+/* --- วางท้ายสุดของไฟล์ style.css --- */
+
+.sub-btn {
+    font-size: 12px !important;
+    padding: 6px 12px !important;
+    background: rgba(255, 204, 0, 0.1) !important; /* สีเหลืองทองจางๆ */
+    border: 1px dashed #ffcc00 !important;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    color: #fff;
+    transition: 0.3s;
+}
+
+.sub-btn:hover {
+    background: #ffcc00 !important;
+    color: #000 !important;
+}
+
+/* อนิเมชั่นตอนเมนูโผล่มา */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
