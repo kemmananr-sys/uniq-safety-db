@@ -410,3 +410,27 @@ body, html {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* --- วางท้ายสุดของไฟล์ style.css --- */
+
+/* สไตล์สำหรับปุ่มทีมหลัก (Red/White) เมื่อถูกเลือก */
+.team-btn.active-filter {
+    background: #fff !important; /* พื้นหลังสีขาว */
+    color: var(--uniq-red) !important; /* ตัวหนังสือสีแดง */
+    border-color: #fff !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* เพิ่มแสงเรืองๆ */
+}
+
+/* สไตล์สำหรับปุ่มทีมย่อย (Yellow) เมื่อถูกเลือก */
+.sub-btn.active-filter {
+    background: #ffcc00 !important; /* พื้นหลังสีเหลืองเต็ม */
+    color: #000 !important; /* ตัวหนังสือสีดำ */
+    border-style: solid !important; /* เปลี่ยนจากเส้นประเป็นเส้นทึบ */
+}
+
+/* สไตล์สำหรับปุ่มพื้นที่ (Black) เมื่อถูกเลือก */
+.area-btn.active-filter {
+    background: #fff !important;
+    color: #000 !important;
+    border-color: #fff !important;
+}

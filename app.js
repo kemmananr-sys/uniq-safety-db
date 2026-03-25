@@ -185,6 +185,7 @@ function closeProfile() {
 }
 
 function clearDisplay() {
+    setActiveButton(null); // <--- ลบสี active ออกทั้งหมด
     const container = document.getElementById('workerList');
     const searchInput = document.getElementById('searchInput');
 
@@ -211,7 +212,8 @@ function filterTeam(teamName) {
     renderListView(`${teamName} TEAM`, members);
 }
 
-function filterArea(areaName) {
+function filterArea(areaName, event) {
+    if (event) setActiveButton(event.currentTarget); // <--- เรียกใช้ฟังก์ชันเปลี่ยนสี
     const members = workerData.filter(w => w['พื้นที่การดูแล'].toString().includes(areaName));
     if (members.length === 0) return alert(`ไม่พบพื้นที่: ${areaName}`);
     renderListView(`${areaName} AREA`, members);
@@ -255,14 +257,15 @@ window.addEventListener('load', () => {
 
 // 1. กำหนดโครงสร้างทีมย่อย (แก้ชื่อให้ตรงกับใน Google Sheet นะครับ)
 const teamStructure = {
-    'TBM': ['Enigneering Tunnel', 'Enigneering GEO Tunnel', 'Enigneering TAM', 'TAM Supervisor', 'Foreman', 'Rig Operator / TBM Operator', 'Erector and Grout operator Team', 'Supervisor', 'Erector and Grout operator Team', 'Surface Team', 'Mechanic & Electrician'],
+    'TBM': ['Engineering Tunnel', 'Engineering GEO Tunnel', 'Engineering TAM', 'TAM Supervisor', 'Foreman', 'Rig Operator / TBM Operator', 'Erector and Grout operator Team', 'Supervisor', 'Surface Team', 'Mechanic & Electrician'],
     'Station PP25': ['PP25', 'IVS06',],
     'Station PP26': ['PP26','VS02','Transition/C&C/VS03','VS02/VS03'],
     'Safety': ['office', 'Station PP26', 'Station PP25', 'TBM']
 };
 
 // 2. ฟังก์ชันเมื่อกดเลือกทีมหลัก
-function selectMainTeam(mainTeam) {
+function selectMainTeam(mainTeam, event) {
+    if (event) setActiveButton(event.currentTarget);
     // กรองรายชื่อทีมหลักก่อน (เรียกใช้ฟังก์ชันเดิมที่คุณมี)
     filterTeam(mainTeam); 
 
@@ -279,7 +282,7 @@ function selectMainTeam(mainTeam) {
             const btn = document.createElement('button');
             btn.className = "filter-btn sub-btn";
             btn.innerText = sub;
-            btn.onclick = () => filterSubInsideMain(mainTeam, sub);
+            btn.onclick = (event) => filterSubInsideMain(mainTeam, sub, event);
             subButtons.appendChild(btn);
         });
     } else {
@@ -288,7 +291,8 @@ function selectMainTeam(mainTeam) {
 }
 
 // แก้ไขฟังก์ชันเดิมให้เป็นแบบนี้ครับ
-function filterSubInsideMain(main, sub) {
+function filterSubInsideMain(main, sub, event) {
+    if (event) setActiveButton(event.currentTarget);
     const members = workerData.filter(w => {
         // ดึงค่าจากคอลัมน์ 'ทีม' และ 'ทีมย่อย' มาเช็คพร้อมกัน
         const mainTeamVal = (w['ทีม'] || "").toString();
@@ -303,6 +307,20 @@ function filterSubInsideMain(main, sub) {
     }
     
     renderListView(`${main} > ${sub}`, members);
+}
+
+// --- วางท้ายไฟล์ app.js ---
+
+// ฟังก์ชันสำหรับจัดการสีปุ่ม Active
+function setActiveButton(clickedButton) {
+    // 1. ค้นหาปุ่มที่มี class 'active-filter' อยู่ในตอนนี้ทั้งหมด แล้วลบ class ออก
+    const currentActive = document.querySelectorAll('.filter-btn.active-filter');
+    currentActive.forEach(btn => btn.classList.remove('active-filter'));
+
+    // 2. ใส่ class 'active-filter' ให้กับปุ่มที่เพิ่งถูกคลิก
+    if (clickedButton) {
+        clickedButton.classList.add('active-filter');
+    }
 }
 
 window.addEventListener('load', checkQRScan);
